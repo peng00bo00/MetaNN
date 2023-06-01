@@ -12,7 +12,7 @@ template <template <typename...> typename TInCont, typename... TInputs,
           template <typename> typename F, template<typename...> typename TOutCont>
 struct Transform_<TInCont<TInputs...>, F, TOutCont>
 {
-    using type = TOutCont<typename F<TInputs>::type ...>;
+    using type = TOutCont<typename F<TInputs>::type ...>;   // fold expression
 };
 
 template <typename TInCont, template <typename> typename F,
