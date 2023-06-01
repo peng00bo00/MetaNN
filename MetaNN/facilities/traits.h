@@ -33,15 +33,15 @@ template <typename T>
 using RemConstRef = std::remove_cv_t<std::remove_reference_t<T>>;
 
 // dependency false
-template <typename... T>
+template <typename...T>
 constexpr static bool DependencyFalse = false;
 
 // compile-time switch
 template <typename TBooleanCont, typename TFunCont>
 struct CompileTimeSwitch_;
 
-template <bool curBool, bool... TBools,
-          template<typename...> class TFunCont, typename curFunc, typename... TFuncs>
+template <bool curBool, bool...TBools,
+          template <typename...> class TFunCont, typename curFunc, typename...TFuncs>
 struct CompileTimeSwitch_<std::integer_sequence<bool, curBool, TBools...>, 
                           TFunCont<curFunc, TFuncs...>>
 {
@@ -54,11 +54,11 @@ struct CompileTimeSwitch_<std::integer_sequence<bool, curBool, TBools...>,
                                                                 TFunCont<TFuncs...>>>::type;
 };
 
-template <template<typename...> class TFunCont, typename curFunc>
+template <template <typename...> class TFunCont, typename curFunc>
 struct CompileTimeSwitch_<std::integer_sequence<bool>, TFunCont<curFunc>> 
 {
     using type = curFunc;
-}
+};
 
 template <typename TBooleanCont, typename TFunCont>
 using CompileTimeSwitch = typename CompileTimeSwitch_<TBooleanCont, TFunCont>::type;
