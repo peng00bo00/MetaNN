@@ -120,6 +120,34 @@ template <typename TInitState, typename TInputCont, template <typename, typename
 using Fold = typename Fold_<TInitState, TInputCont, F>::type;
 //=========================================================================================
 
+// PushBack ===============================================================================
+template <typename TCont, typename... TValue>
+struct PushBack_;
+
+template <template <typename...> typename TCont, typename... TParams, typename... TValue>
+struct PushBack_<TCont<TParams...>, TValue...>
+{
+    using type = TCont<TParams..., TValue...>;
+};
+
+template <typename TCont, typename... TValue>
+using PushBack = typename PushBack_<TCont, TValue...>::type;
+//=========================================================================================
+
+// Cascade ===============================================================================
+template <typename TCont1, typename TCont2>
+struct Cascade_;
+
+template <template <typename...> typename TCont, typename... TParams1, typename... TParams2>
+struct Cascade_<TCont<TParams1...>, TCont<TParams2...>>
+{
+    using type = TCont<TParams1..., TParams2...>;
+};
+
+template <typename TCont1, typename TCont2>
+using Cascade = typename Cascade_<TCont1, TCont2>::type;
+//=========================================================================================
+
 // Transform ==============================================================================
 template <typename TInCont, template <typename> typename F, template<typename...> typename TOutCont>
 struct Transform_;
