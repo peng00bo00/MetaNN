@@ -29,7 +29,7 @@ constexpr bool HasKey = HasKey_<TCon, TKey>::value;
 
 //=========================================================================================
 
-// IsEqual
+// IsEqual ================================================================================
 template <typename TFirstSet, typename TSecondSet>
 struct IsEqual_;
 

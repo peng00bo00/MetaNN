@@ -27,7 +27,7 @@ struct Find_
     using type = decltype(NSFind::map_<TCon, TDefault>::apply((TKey*)nullptr));
 };
 
-template <typename TCon, typename TKey, typename TDefault>
+template <typename TCon, typename TKey, typename TDefault = void>
 using Find = typename Find_<TCon, TKey, TDefault>::type;
 
 // HasKey =================================================================================
