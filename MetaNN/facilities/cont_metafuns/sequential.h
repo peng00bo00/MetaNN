@@ -3,6 +3,42 @@
 
 namespace MetaNN::Sequential
 {
+// Create =================================================================================
+namespace NSCreate
+{
+template <typename L, typename R> struct Concat;
+
+template <template <typename...> typename TCont, typename... L, typename... R>
+struct Concat<TCont<L...>, TCont<R...>>
+{
+    using type = TCont<L..., R...>;
+};
+}
+
+template <template <typename...> typename TCont, typename TParam, int N>
+struct Create_
+{
+    using type = typename NSCreate::Concat<
+            typename Create_<TCont, TParam, N / 2>::type,
+            typename Create_<TCont, TParam, N - N / 2>::type
+        >::type;
+};
+
+template <template <typename...> typename TCont, typename TParam>
+struct Create_<TCont, TParam, 1>
+{
+    using type = TCont<TParam>;
+};
+
+template <template <typename...> typename TCont, typename TParam>
+struct Create_<TCont, TParam, 0>
+{
+    using type = TCont<>;
+};
+
+template <template <typename...> typename TCont, typename TParam, int N>
+using Create = typename Create_<TCont, TParam, N>::type;
+//=========================================================================================
 
 // At =====================================================================================
 namespace NSAt
@@ -30,6 +66,37 @@ struct At_<TCon<TParams...>, N>
 
 template <typename TCon, int N>
 using At = typename At_<TCon, N>::type;
+//=========================================================================================
+
+// Order===================================================================================
+namespace NSOrder
+{
+template <typename TIndexCont, typename TTypeCont>
+struct impl;
+
+template <template <typename...> typename TTypeCont, typename...TTypes, int...index>
+struct impl<Helper::IndexSequence<index...>, TTypeCont<TTypes...>>
+    : Helper::KVBinder<TTypes, Helper::Int_<index>> ...
+{
+    using Helper::KVBinder<TTypes, Helper::Int_<index>>::apply ...;
+};
+}
+
+template <typename TCon, typename TReq>
+struct Order_;
+
+template <template <typename...> typename TCon, typename... TParams, typename TReq>
+struct Order_<TCon<TParams...>, TReq>
+{
+    using IndexSeq = Helper::MakeIndexSequence<sizeof...(TParams)>;
+    using LookUpTable = NSOrder::impl<IndexSeq, TCon<TParams...>>;
+    using AimType = decltype(LookUpTable::apply((TReq*)nullptr));
+    constexpr static int value = AimType::value;
+};
+
+
+template <typename TCon, typename TReq>
+constexpr static int Order = Order_<TCon, TReq>::value;
 //=========================================================================================
 
 // Set ====================================================================================
