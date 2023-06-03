@@ -5,27 +5,28 @@ namespace MetaNN::Sequential
 {
 
 // At =====================================================================================
-// namespace NSAt
-// {
-// template <typename ignore>
-// struct impl;
+namespace NSAt
+{
+template <typename ignore>
+struct impl;
 
-// template <int... ignore>
-// struct impl<Helper::IndexSequence<ignore...>>
-// {
-//     template <typename nth>
-//     static nth apply(decltype(ignore, (void*)nullptr)..., nth*, ...);
-// };
-// }
+template <int... ignore>
+struct impl<Helper::IndexSequence<ignore...>>
+{
+    template <typename nth>
+    static nth apply(decltype(ignore, (void*)nullptr)..., nth*, ...);
+};
+}
 
 template <typename TCon, int N>
 struct At_;
 
-// template <template <typename...> typename TCon, typename... TParams, int N>
-// struct At_<TCon<TParams...>, N>
-// {
-//     using type = decltype(NSAt::impl<Helper::MakeIndexSequence<N>>::apply((TParams*)nullptr...));
-// };
+template <template <typename...> typename TCon, typename... TParams, int N>
+struct At_<TCon<TParams...>, N>
+{
+    using Seq = Helper::MakeIndexSequence<N>;
+    using type = decltype(NSAt::impl<Seq>::apply((TParams*)nullptr...));
+};
 
 template <typename TCon, int N>
 using At = typename At_<TCon, N>::type;
@@ -134,7 +135,7 @@ template <typename TCont, typename... TValue>
 using PushBack = typename PushBack_<TCont, TValue...>::type;
 //=========================================================================================
 
-// Cascade ===============================================================================
+// Cascade ================================================================================
 template <typename TCont1, typename TCont2>
 struct Cascade_;
 
@@ -164,7 +165,7 @@ template <typename TInCont, template <typename> typename F,
 using Transform = typename Transform_<TInCont, F, TOutCont>::type;
 //=========================================================================================
 
-// Size
+// Size ===================================================================================
 template <typename TArray>
 struct Size_;
 
@@ -176,8 +177,9 @@ struct Size_<Cont<T...>>
 
 template <typename TArray>
 constexpr static size_t Size = Size_<RemConstRef<TArray>>::value;
+//=========================================================================================
 
-// Head: get the first element in the sequence
+// Head: get the first element in the sequence ============================================
 template <typename TSeqCont>
 struct Head_;
 
@@ -189,8 +191,9 @@ struct Head_<Container<TH, TCases...>>
 
 template <typename TSeqCont>
 using Head = typename Head_<TSeqCont>::type;
+//=========================================================================================
 
-// Tail: remove the first element in the sequence
+// Tail: remove the first element in the sequence =========================================
 template <typename TSeqCont>
 struct Tail_;
 
@@ -202,5 +205,4 @@ struct Tail_<Container<TH, TCases...>>
 
 template <typename TSeqCont>
 using Tail = typename Tail_<TSeqCont>::type;
-
 }
