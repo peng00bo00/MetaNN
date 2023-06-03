@@ -47,6 +47,45 @@ template <typename TCon, typename TKey, bool bMute = false>
 using Insert = typename Insert_<TCon, TKey, bMute>::type;
 //=========================================================================================
 
+// Erase ==================================================================================
+namespace NSErase
+{
+template <typename TCon, typename TKey, typename... TItems>
+struct Helper_
+{
+    using type = TCon;
+};
+
+template <template <typename...> typename TCon, typename... TParams, typename TKey, typename TCur, typename... TItems>
+struct Helper_<TCon<TParams...>, TKey, TCur, TItems...>
+{
+    using type = typename Helper_<TCon<TParams..., TCur>, TKey, TItems...>::type;
+};
+
+template <template <typename...> typename TCon, typename... TParams, typename TKey, typename... TItems>
+struct Helper_<TCon<TParams...>, TKey, TKey, TItems...>
+{
+    using type = TCon<TParams..., TItems...>;
+};
+}
+
+template <typename TCon, typename TKey>
+struct Erase_;
+
+template <template <typename...> typename TCon, typename TKey, typename... TItems>
+struct Erase_<TCon<TItems...>, TKey> : NSErase::Helper_<TCon<>, TKey, TItems...>
+{};
+
+template <typename TCon, typename TKey>
+using Erase = typename Erase_<TCon, TKey>::type;
+//=========================================================================================
+
+// Create From Items ======================================================================
+
+
+
+//=========================================================================================
+
 // IsEqual ================================================================================
 template <typename TFirstSet, typename TSecondSet>
 struct IsEqual_;
