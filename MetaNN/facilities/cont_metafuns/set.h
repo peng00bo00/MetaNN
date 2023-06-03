@@ -81,9 +81,32 @@ using Erase = typename Erase_<TCon, TKey>::type;
 //=========================================================================================
 
 // Create From Items ======================================================================
+namespace NSCreateFromItems
+{
+template <template<typename> typename Picker, bool bMute>
+struct Creator
+{
+    template <typename TState, typename TInput>
+    struct apply
+    {
+        using TItem = typename Picker<TInput>::type;
+        using type  = Set::Insert<TState, TItem, bMute>;
+    };
+};
+}
 
+template <typename TItemCont, template <typename> typename Picker, bool bMute,
+          template<typename...> typename TOutCont = std::tuple>
+struct CreateFromItems_
+{
+    using type = Sequential::Fold<TOutCont<>, 
+                                  TItemCont, 
+                                  NSCreateFromItems::Creator<Picker, bMute>::template apply>;
+};
 
-
+template <typename TItemCont, template <typename> typename Picker, bool bMute,
+          template<typename...> typename TOutCont = std::tuple>
+using CreateFromItems = typename CreateFromItems_<TItemCont, Picker, bMute, TOutCont>::type;
 //=========================================================================================
 
 // IsEqual ================================================================================
@@ -97,10 +120,9 @@ struct IsEqual_<Cont1<Params1...>, Cont2<Params2...>>
 {
     constexpr static bool value1 = (HasKey<Cont1<Params1...>, Params2> && ...);
     constexpr static bool value2 = (HasKey<Cont2<Params2...>, Params1> && ...);
-    constexpr static bool value = value1 && value2;
+    constexpr static bool value  = value1 && value2;
 };
 
 template <typename TFirstSet, typename TSecondSet>
 constexpr bool IsEqual = IsEqual_<TFirstSet, TSecondSet>::value;
-
 }
