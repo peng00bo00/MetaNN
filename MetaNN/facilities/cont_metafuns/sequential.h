@@ -32,6 +32,94 @@ template <typename TCon, int N>
 using At = typename At_<TCon, N>::type;
 //=========================================================================================
 
+// Set ====================================================================================
+namespace NSSet
+{
+template <typename TCon, int N, typename TValue, typename TRemain, typename = Helper::When<true>>
+struct imp_;
+
+template <template <typename...> typename TCon, int N, typename TValue, typename... TProcessed, typename T0, typename... TRemain>
+struct imp_<TCon<TProcessed...>, N, TValue, TCon<T0, TRemain...>, Helper::When<(N == 0)>>
+{
+    using type = TCon<TProcessed..., TValue, TRemain...>;
+};
+
+template <template <typename...> typename TCon, int N, typename TValue,
+          typename... TProcessed, typename T0, typename T1, typename... TRemain>
+struct imp_<TCon<TProcessed...>, N, TValue, TCon<T0, T1, TRemain...>, Helper::When<(N == 1)>>
+{
+    using type = TCon<TProcessed..., T0, TValue, TRemain...>;
+};
+
+template <template <typename...> typename TCon, int N, typename TValue,
+          typename... TProcessed, typename T0, typename T1, typename T2, typename... TRemain>
+struct imp_<TCon<TProcessed...>, N, TValue, TCon<T0, T1, T2, TRemain...>, Helper::When<(N == 2)>>
+{
+    using type = TCon<TProcessed..., T0, T1, TValue, TRemain...>;
+};
+
+template <template <typename...> typename TCon, int N, typename TValue,
+          typename... TProcessed,
+          typename T0, typename T1, typename T2, typename T3, typename... TRemain>
+struct imp_<TCon<TProcessed...>, N, TValue, TCon<T0, T1, T2, T3, TRemain...>, Helper::When<(N == 3)>>
+{
+    using type = TCon<TProcessed..., T0, T1, T2, TValue, TRemain...>;
+};
+
+template <template <typename...> typename TCon, int N, typename TValue,
+          typename... TProcessed,
+          typename T0, typename T1, typename T2, typename T3, typename... TRemain>
+struct imp_<TCon<TProcessed...>, N, TValue, TCon<T0, T1, T2, T3, TRemain...>, Helper::When<(N >= 4) && (N < 8)>>
+{
+    using type = typename imp_<TCon<TProcessed..., T0, T1, T2, T3>,
+                               N - 4, TValue, TCon<TRemain...>>::type;
+};
+
+template <template <typename...> typename TCon, int N, typename TValue,
+          typename... TProcessed,
+          typename T0, typename T1, typename T2, typename T3,
+          typename T4, typename T5, typename T6, typename T7,
+          typename... TRemain>
+struct imp_<TCon<TProcessed...>, N, TValue,
+            TCon<T0, T1, T2, T3, T4, T5, T6, T7, TRemain...>, Helper::When<(N >= 8) && (N < 16)>>
+{
+    using type = typename imp_<TCon<TProcessed..., T0, T1, T2, T3, T4, T5, T6, T7>,
+                               N - 8, TValue, TCon<TRemain...>>::type;
+};
+
+template <template <typename...> typename TCon, int N, typename TValue,
+          typename... TProcessed,
+          typename T0, typename T1, typename T2, typename T3,
+          typename T4, typename T5, typename T6, typename T7,
+          typename T8, typename T9, typename TA, typename TB,
+          typename TC, typename TD, typename TE, typename TF,
+          typename... TRemain>
+struct imp_<TCon<TProcessed...>, N, TValue,
+            TCon<T0, T1, T2, T3, T4, T5, T6, T7,
+                 T8, T9, TA, TB, TC, TD, TE, TF,
+                 TRemain...>, Helper::When<(N >= 16)>>
+{
+    using type = typename imp_<TCon<TProcessed...,
+                                    T0, T1, T2, T3, T4, T5, T6, T7,
+                                    T8, T9, TA, TB, TC, TD, TE, TF>,
+                               N - 16, TValue, TCon<TRemain...>>::type;
+};
+
+}
+
+template <typename TCont, int N, typename TValue>
+struct Set_;
+
+template <template <typename...> typename TCont, int N, typename TValue, typename... TParams>
+struct Set_<TCont<TParams...>, N, TValue>
+{
+    using type = typename NSSet::imp_<TCont<>, N, TValue, TCont<TParams...>>::type;
+};
+
+template <typename TCont, int N, typename TValue>
+using Set = typename Set_<TCont, N, TValue>::type;
+//=========================================================================================
+
 // Fold ===================================================================================
 namespace NSFold
 {
