@@ -60,7 +60,7 @@ struct At_;
 template <template <typename...> typename TCon, typename... TParams, int N>
 struct At_<TCon<TParams...>, N>
 {
-    using Seq = Helper::MakeIndexSequence<N>;
+    using Seq  = Helper::MakeIndexSequence<N>;
     using type = decltype(NSAt::impl<Seq>::apply((TParams*)nullptr...));
 };
 
@@ -68,7 +68,7 @@ template <typename TCon, int N>
 using At = typename At_<TCon, N>::type;
 //=========================================================================================
 
-// Order===================================================================================
+// Order ==================================================================================
 namespace NSOrder
 {
 template <typename TIndexCont, typename TTypeCont>
@@ -88,12 +88,12 @@ struct Order_;
 template <template <typename...> typename TCon, typename... TParams, typename TReq>
 struct Order_<TCon<TParams...>, TReq>
 {
-    using IndexSeq = Helper::MakeIndexSequence<sizeof...(TParams)>;
+    using IndexSeq    = Helper::MakeIndexSequence<sizeof...(TParams)>;
     using LookUpTable = NSOrder::impl<IndexSeq, TCon<TParams...>>;
-    using AimType = decltype(LookUpTable::apply((TReq*)nullptr));
+    using AimType     = decltype(LookUpTable::apply((TReq*)nullptr));
+
     constexpr static int value = AimType::value;
 };
-
 
 template <typename TCon, typename TReq>
 constexpr static int Order = Order_<TCon, TReq>::value;
