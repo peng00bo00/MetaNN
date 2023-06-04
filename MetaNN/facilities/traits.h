@@ -62,5 +62,4 @@ struct CompileTimeSwitch_<std::integer_sequence<bool>, TFunCont<curFunc>>
 
 template <typename TBooleanCont, typename TFunCont>
 using CompileTimeSwitch = typename CompileTimeSwitch_<TBooleanCont, TFunCont>::type;
-
 }
