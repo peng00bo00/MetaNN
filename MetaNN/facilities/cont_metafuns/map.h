@@ -5,6 +5,35 @@
 
 namespace MetaNN::Map
 {
+// Create from items ======================================================================
+namespace NSCreateFromItems
+{
+template <template<typename> typename KeyPicker>
+struct KVCreator
+{
+    template <typename TItem>
+    struct apply
+    {
+        using type = Helper::KVBinder<typename KeyPicker<TItem>::type, TItem>;
+    };
+};
+}
+
+template <typename TItemCont, template<typename> typename KeyPicker,
+          template<typename...> typename TOutCont>
+struct CreateFromItems_
+{
+    template <typename TItem>
+    using CurKVCreator = typename NSCreateFromItems::KVCreator<KeyPicker>::template apply<TItem>;
+
+    using type = Sequential::Transform<TItemCont, CurKVCreator, TOutCont>;
+};
+
+template <typename TItemCont,
+          template<typename> typename KeyPicker,
+          template<typename...> typename TOutCont = std::tuple>
+using CreateFromItems = typename CreateFromItems_<TItemCont, KeyPicker, TOutCont>::type;
+//=========================================================================================
 
 // Find ===================================================================================
 namespace NSFind
@@ -29,9 +58,9 @@ struct Find_
 
 template <typename TCon, typename TKey, typename TDefault = void>
 using Find = typename Find_<TCon, TKey, TDefault>::type;
+//=========================================================================================
 
 // HasKey =================================================================================
 template <typename TCon, typename TKey>
 constexpr static bool HasKey = !std::is_same_v<Find<TCon, TKey>, void>;
-
 }
