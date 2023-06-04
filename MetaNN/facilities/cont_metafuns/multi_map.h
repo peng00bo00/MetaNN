@@ -19,7 +19,7 @@ template <typename TProcessed,
           typename TCur, typename... TRemain,
           typename TKey, typename TValue>
 struct imp_<TProcessed, TKey, TValue, TCur, TRemain...>
-        : imp_<Sequential::PushBack<TProcessed>, TKey, TValue, TRemain...>
+        : imp_<Sequential::PushBack<TProcessed, TCur>, TKey, TValue, TRemain...>
 { };
 
 template <typename TProcessed,
