@@ -49,8 +49,7 @@ struct MakeIndexSequence_<0>
 // create a sequence of {0, 1, ..., N-1}
 template <int N>
 using MakeIndexSequence = typename MakeIndexSequence_<N>::type;
-
-// MakeIndexSequence =======================================================================
+// =========================================================================================
 
 // KVBinder ================================================================================
 template <typename TK, typename TV>
@@ -80,5 +79,4 @@ struct Pair
     using FirstType  = V1;
     using SecondType = V2;
 };
-// =========================================================================================
 }
