@@ -89,17 +89,38 @@ struct VarTypeDict
         }
 
         template <typename TTag>
-        const auto& Get() const;
+        const auto& Get() const
+        {
+            constexpr static auto TagPos = Sequential::Order<VarTypeDict, TTag>;
+            using AimType = Sequential::At<Values, TagPos>;
+
+            void* tmp = m_tuple[TagPos].get();
+            if (!tmp)
+                throw std::runtime_error("Empty Value.");
+            AimType* res = static_cast<AimType*>(tmp);
+            return *res;
+        }
 
         template <typename TTag>
-        auto& Get();
+        auto& Get()
+        {
+            constexpr static auto TagPos = Sequential::Order<VarTypeDict, TTag>;
+            using AimType = Sequential::At<Values, TagPos>;
+
+            void* tmp = m_tuple[TagPos].get();
+            if (!tmp)
+                throw std::runtime_error("Empty Value.");
+
+            AimType* res = static_cast<AimType*>(tmp);
+            return *res;
+        }
     
     private:
         std::shared_ptr<void> m_tuple[(sizeof...(TTypes) == 0) ? 1 : sizeof...(TTypes)];
     };
 
 public:
-    // create an instance of Values<...> that contains a list of parameters (use NullParameter at the beginning)
+    // create an instance of Values<...> that contains a list of parameters (use NullParameter as initialization)
     static auto Create() {
         using type = Sequential::Create<Values, NullParameter, sizeof...(TParameters)>;
         return type{};
