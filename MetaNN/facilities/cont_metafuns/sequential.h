@@ -68,7 +68,7 @@ template <typename TCon, int N>
 using At = typename At_<TCon, N>::type;
 //=========================================================================================
 
-// Order: get the index of TReq from container TCon =======================================
+// Order: get TCon<...>[TReq] =============================================================
 namespace NSOrder
 {
 template <typename TIndexCont, typename TTypeCont>
@@ -99,7 +99,7 @@ template <typename TCon, typename TReq>
 constexpr static int Order = Order_<TCon, TReq>::value;
 //=========================================================================================
 
-// Set ====================================================================================
+// Set: set TCont<...>[N] to TValue =======================================================
 namespace NSSet
 {
 template <typename TCon, int N, typename TValue, typename TRemain, typename = Helper::When<true>>
