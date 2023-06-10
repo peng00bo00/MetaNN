@@ -12,7 +12,7 @@ namespace MetaNN
 template <typename...TParameters>
 struct VarTypeDict
 {
-    // Values<> is the container of parameters
+    // Values<...> is the container of parameters
     template <typename...TTypes>
     struct Values {
     public:
@@ -49,7 +49,19 @@ struct VarTypeDict
 
     public:
         template <typename TTag, typename... TParams>
-        void Update(TParams&&... p_params);
+        void Update(TParams&&... p_params)
+        {
+            constexpr static auto TagPos = Sequential::Order<VarTypeDict, TTag>;
+            using rawVal = Sequential::At<Values, TagPos>;
+            rawVal* tmp = new rawVal(std::forward<TParams>(p_params)...);
+            m_tuple[TagPos] = std::shared_ptr<void>(tmp,
+                                    [](void* ptr){
+                                        rawVal* nptr = static_cast<rawVal*>(ptr);
+                                        delete nptr;
+                                    });
+
+            return;
+        }
 
         template <typename TTag, typename TVal>
         auto Set(TVal&& val) &&
@@ -64,6 +76,7 @@ struct VarTypeDict
                                         delete nptr;
                                     });
             
+            // check if the type Values[TagPos] changes
             if constexpr (std::is_same_v<rawVal, Sequential::At<Values, TagPos>>)
             {
                 return *this;
@@ -86,6 +99,7 @@ struct VarTypeDict
     };
 
 public:
+    // create an instance of Values<...> that contains a list of parameters (use NullParameter at the beginning)
     static auto Create() {
         using type = Sequential::Create<Values, NullParameter, sizeof...(TParameters)>;
         return type{};

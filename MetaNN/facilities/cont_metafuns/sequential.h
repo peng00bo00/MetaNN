@@ -68,7 +68,7 @@ template <typename TCon, int N>
 using At = typename At_<TCon, N>::type;
 //=========================================================================================
 
-// Order ==================================================================================
+// Order: get the index of TReq from container TCon =======================================
 namespace NSOrder
 {
 template <typename TIndexCont, typename TTypeCont>
