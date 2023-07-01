@@ -12,7 +12,7 @@ namespace MetaNN
 template <typename...TParameters>
 struct VarTypeDict
 {
-    // Values<...> is the container of parameters
+    // Values<...> is the container of parameters like Values<A, B, bool, float, ...>
     template <typename...TTypes>
     struct Values {
     public:
