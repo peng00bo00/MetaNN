@@ -81,6 +81,7 @@ public:
         }
         else
         {
+            // reuse the memory chunk if available
             void* mem = slot.back();
             slot.pop_back();
             return std::shared_ptr<T>((T*)mem, DesImpl(slot));
