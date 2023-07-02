@@ -43,6 +43,7 @@ private:
         
         void operator () (void* p_val) const
         {
+            // return the memory chunk in deconstruction
             std::lock_guard<std::mutex> guard(m_mutex);
             m_refPool.push_back(p_val);
         }
@@ -66,7 +67,7 @@ public:
         // mod(p_elemSize, 1024)
         if (p_elemSize & 0x3ff)
         {
-            // request chuncks of 1024 bytes
+            // request chunks of 1024 bytes
             p_elemSize = ((p_elemSize >> 10) + 1) << 10;
         }
 
