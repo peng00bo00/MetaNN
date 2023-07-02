@@ -35,6 +35,7 @@ private:
         }
     };
     
+    // Deleter of the shared ptr
     struct DesImpl
     {
         DesImpl(std::deque<void*>& p_refPool)
@@ -54,14 +55,18 @@ public:
     template <typename T>
     static std::shared_ptr<T> Allocate(size_t p_elemSize)
     {
+        // check the number of element requested
         if (p_elemSize == 0)
         {
             return nullptr;
         }
-        p_elemSize *= sizeof(T);
+        // bytes requested
+        p_elemSize *= sizeof(T);    
 
+        // mod(p_elemSize, 1024)
         if (p_elemSize & 0x3ff)
         {
+            // request chuncks of 1024 bytes
             p_elemSize = ((p_elemSize >> 10) + 1) << 10;
         }
 
@@ -83,7 +88,7 @@ public:
     }
 
 private:
-    inline static std::mutex m_mutex;
+    inline static std::mutex m_mutex;   // inline variable
 };
 
 }
