@@ -246,6 +246,7 @@ namespace MetaNN
         return !(val1 == val2);
     }
 
+    // Class Template Argument Deduction (CTAD)
     template <typename... TShapeParameter,
               std::enable_if_t<(std::is_convertible_v<TShapeParameter, size_t> && ...)>* = nullptr>
     explicit Shape(TShapeParameter...) -> Shape<sizeof...(TShapeParameter)>;
