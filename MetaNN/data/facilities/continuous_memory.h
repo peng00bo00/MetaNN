@@ -9,11 +9,12 @@ namespace MetaNN
 template <typename TElem, typename TDevice>
 class ContinuousMemory
 {
+    // check if TElem has const or ref
     static_assert(std::is_same<RemConstRef<TElem>, TElem>::value);
     using ElementType = TElem;
     
 public:
-    // allocate memory with Allocator<TDevice>
+    // allocate memory with Allocator<TDevice>::Allocate<ElementType>
     explicit ContinuousMemory(size_t p_size)
         : m_mem(Allocator<TDevice>::template Allocate<ElementType>(p_size))
         , m_size(p_size)

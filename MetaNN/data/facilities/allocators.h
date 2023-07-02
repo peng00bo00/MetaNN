@@ -60,8 +60,8 @@ public:
         {
             return nullptr;
         }
-        // bytes requested
-        p_elemSize *= sizeof(T);    
+        // element number to bytes requested
+        p_elemSize *= sizeof(T);
 
         // mod(p_elemSize, 1024)
         if (p_elemSize & 0x3ff)
