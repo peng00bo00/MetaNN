@@ -38,6 +38,7 @@ namespace MetaNN
     template <typename TCategory, typename TElem, typename TDevice>
     using PrincipalDataType = typename PrincipalDataType_<TElem, TDevice, TCategory::DimNum>::type;
 
+    // DataCategory ===========================================================================
     template <typename T>
     struct DataCategory_
     {
@@ -52,7 +53,9 @@ namespace MetaNN
 
     template <typename T>
     using DataCategory = typename DataCategory_<T>::type;
+    //=========================================================================================
     
+    // IsTensorWithDim ========================================================================
     template <typename T, size_t uDim>
     constexpr bool IsTensorWithDim = std::is_same_v<DataCategory<T>, CategoryTags::Tensor<uDim>>;
 
@@ -67,4 +70,5 @@ namespace MetaNN
 
     template <typename T>
     constexpr bool IsThreeDArray = IsTensorWithDim<T, 3>;
+    //=========================================================================================
 }
