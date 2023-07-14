@@ -24,9 +24,11 @@ namespace MetaNN
             else
             {
                 size_t curGap = 1;
-                size_t res = IndexToOffset(dims, curGap, remIdx...);
-                gap = curGap * dims[indexPos + 1];
+                size_t res    = IndexToOffset(dims, curGap, remIdx...);
+
+                gap  = curGap * dims[indexPos + 1];
                 res += static_cast<size_t>(curIdx) * gap;
+
                 return res;
             }
         }
@@ -70,6 +72,7 @@ namespace MetaNN
         explicit Shape(TIntTypes... shapes)
         {
             static_assert(sizeof...(TIntTypes) == uDimNum);
+            // fill m_dims with shapes
             NSShape::FillShape<0>(m_dims, shapes...);
         }
 
