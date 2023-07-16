@@ -161,6 +161,7 @@ namespace MetaNN
         {
             assert(AvailableForWrite());
             m_buffer.clear();
+            // TODO: check the definition of m_shape.Cardinal()
             m_shape = NSScalableTensor::ShapeInit(m_shape.Cardinal());
         }
     
