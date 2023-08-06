@@ -23,6 +23,25 @@ namespace MetaNN
     template <typename TOpTag, typename TPolicies, typename... TOperands>
     class Operation<TOpTag, OperandContainer<TOperands...>, TPolicies>
     {
+        static_assert(sizeof...(TOperands) > 0, "Operation not support zero operands.");
+        static_assert((std::is_same_v<RemConstRef<TOperands>, TOperands> && ...),
+                      "TOperands is not an available types");
+    
+    public:
+        using Policies = TPolicies;
+        using CategoryTag = OperCateCal<TOpTag, TPolicies, TOperands...>;
+        using ElementType = typename OperElementType_<TOpTag, TOperands...>::type;
+        using DeviceType  = typename OperDeviceType_<TOpTag, TOperands...>::type;
 
+        template <size_t Id>
+        using OperandType = Sequential::At<OperandContainer<TOperands...>, Id>;
+    
+    private:
+        OperAuxParams<TOpTag, ElementType, CategoryTag> m_auxParams;
+        OperShapeInfo<TOpTag, CategoryTag, TPolicies> m_shapeInfo;
+        std::tuple<TOperands...> m_operands;
+
+        using TPrincipal = PrincipalDataType<CategoryTag, ElementType, DeviceType>;
+        EvalBuffer<TPrincipal> m_evalBuf;
     };
 }
